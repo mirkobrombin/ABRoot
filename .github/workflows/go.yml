@@ -58,8 +58,8 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y parted losetup kpartx
+        apt-get update
+        apt-get install -y parted mount kpartx
 
     - name: Extract Build
       run: |
