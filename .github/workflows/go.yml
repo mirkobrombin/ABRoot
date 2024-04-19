@@ -45,6 +45,8 @@ jobs:
   test:
     name: Integration Test
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/vanilla-os/pico:main
     needs: build
     steps:
     - uses: actions/checkout@v4
