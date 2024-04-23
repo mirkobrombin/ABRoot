@@ -97,18 +97,14 @@ jobs:
 
       - name: Check Loop Devices
         run: |
-          for loopdev in $(losetup -l | awk '{print $1}' | grep '/dev/loop'); do
-            echo "Label for $loopdev:"
-            e2label $loopdev || true
-          done
-
           partprobe
           losetup -a
           ls -l /dev/disk/by-label
 
-      - name: Inform Kernel
+      - name: Test Mount
         run: |
-          partprobe
+          mount LABEL=vos-var /mnt
+          umount /mnt
 
       - name: List devices
         run: lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
