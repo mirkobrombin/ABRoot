@@ -47,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
+      options: --privileged -it
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +63,9 @@ jobs:
           apt-get install -y parted mount kpartx kmod
 
       - name: Check for loop module
-        run: lsmod | grep loop
+        run: |
+          modprobe loop
+          lsmod | grep loop
 
       - name: Extract Build
         run: |
