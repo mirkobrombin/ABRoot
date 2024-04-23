@@ -49,7 +49,7 @@ jobs:
       image: ghcr.io/vanilla-os/pico:main
       options: --privileged -it
       volumes:
-        - /:/run/host
+        - /:/run/host:rslave
     needs: build
     steps:
       - uses: actions/checkout@v4
