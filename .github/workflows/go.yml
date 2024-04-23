@@ -60,11 +60,7 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get update
-          apt-get install -y parted mount kpartx kmod
-
-      - name: Check for loop module
-        run: |
-          lsmod | grep loop
+          apt-get install -y parted mount kpartx kmod dosfstools
 
       - name: Extract Build
         run: |
