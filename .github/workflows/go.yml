@@ -85,12 +85,7 @@ jobs:
           mkfs.vfat vos-efi.img -n vos-efi
 
       - name: Check Virtual Disks Images
-        run: |
-          file vos-var.img
-          file vos-a.img
-          file vos-b.img
-          file vos-boot.img
-          file vos-efi.img
+        run: ls -lh *.img
 
       - name: Setup Loop Devices
         run: |
