@@ -96,7 +96,7 @@ jobs:
           mkfs.vfat $LOOP_EFI -n vos-efi
 
       - name: List devices
-        run: lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
+        run: lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
 
       - name: Run Integration Test
         run: |
