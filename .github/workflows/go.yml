@@ -73,7 +73,7 @@ jobs:
           dd if=/dev/zero of=vos-b.img bs=1M count=1024
           dd if=/dev/zero of=vos-boot.img bs=1M count=100
           dd if=/dev/zero of=vos-efi.img bs=1M count=100
-          
+
       - name: Format Virtual Disks Images
         run: |
           mkfs.ext4 vos-var.img -L vos-var
@@ -81,7 +81,7 @@ jobs:
           mkfs.ext4 vos-b.img -L vos-b
           mkfs.ext4 vos-boot.img -L vos-boot
           mkfs.vfat vos-efi.img -n vos-efi
-          
+
       - name: Check Virtual Disks Images
         run: ls -l vos-*.img
 
@@ -92,9 +92,11 @@ jobs:
           losetup -Pf --show vos-b.img
           losetup -Pf --show vos-boot.img
           losetup -Pf --show vos-efi.img
-          
+
       - name: Check Loop Devices
-        run: losetup -a
+        run: |
+          losetup -a
+          ls -l /dev/disk/by-label
 
       - name: Inform Kernel
         run: |
