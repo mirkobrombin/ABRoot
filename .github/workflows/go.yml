@@ -95,6 +95,9 @@ jobs:
           mkfs.ext4 $LOOP_BOOT -L vos-boot
           mkfs.vfat $LOOP_EFI -n vos-efi
 
+      - name: List devices
+        run: lsblk", "-J", "-o", "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID
+
       - name: Run Integration Test
         run: |
           ./abrootv2 status
