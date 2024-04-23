@@ -56,13 +56,13 @@ jobs:
           name: build-artifacts
           path: artifacts
 
-      - name: Check for loop module
-        run: lsmod | grep loop
-
       - name: Install Dependencies
         run: |
           apt-get update
-          apt-get install -y parted mount kpartx
+          apt-get install -y parted mount kpartx kmod
+
+      - name: Check for loop module
+        run: lsmod | grep loop
 
       - name: Extract Build
         run: |
