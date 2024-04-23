@@ -47,9 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
-      options: --privileged -it --cap-add ALL
       volumes:
-        - /:/run/host:rslave
+        - /dev:/dev:rslave
     needs: build
     steps:
       - uses: actions/checkout@v4
