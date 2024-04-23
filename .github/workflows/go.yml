@@ -64,7 +64,6 @@ jobs:
 
       - name: Check for loop module
         run: |
-          modprobe loop
           lsmod | grep loop
 
       - name: Extract Build
