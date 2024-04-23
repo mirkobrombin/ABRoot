@@ -48,6 +48,8 @@ jobs:
     container:
       image: ghcr.io/vanilla-os/pico:main
       options: --privileged -it
+      volumes:
+        - /:/run/host
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -96,7 +98,7 @@ jobs:
       - name: Check Loop Devices
         run: |
           losetup -a
-          ls -l /dev/disk/by-label
+          ls -l /run/host/dev/disk/by-label
 
       - name: Inform Kernel
         run: |
