@@ -85,7 +85,12 @@ jobs:
           mkfs.vfat vos-efi.img -n vos-efi
 
       - name: Check Virtual Disks Images
-        run: ls -l vos-*.img
+        run: |
+          file vos-var.img
+          file vos-a.img
+          file vos-b.img
+          file vos-boot.img
+          file vos-efi.img
 
       - name: Setup Loop Devices
         run: |
@@ -97,6 +102,12 @@ jobs:
 
       - name: Check Loop Devices
         run: |
+          for loopdev in $(losetup -l | awk '{print $1}' | grep '/dev/loop'); do
+            echo "Label for $loopdev:"
+            e2label $loopdev
+          done
+
+          partprobe
           losetup -a
           ls -l /run/host/dev/disk/by-label
 
