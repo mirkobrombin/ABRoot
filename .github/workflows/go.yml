@@ -66,29 +66,30 @@ jobs:
         run: |
           tar -xzvf artifacts/abrootv2.tar.gz -C .
 
-      - name: Create and Setup Virtual Disks
+      - name: Create Virtual Disks Images
         run: |
-          # Create virtual disk files
           dd if=/dev/zero of=vos-var.img bs=1M count=1024
           dd if=/dev/zero of=vos-a.img bs=1M count=1024
           dd if=/dev/zero of=vos-b.img bs=1M count=1024
           dd if=/dev/zero of=vos-boot.img bs=1M count=100
           dd if=/dev/zero of=vos-efi.img bs=1M count=100
 
-          # Check virtual disk files
-          ls -l vos-*.img
+      - name: Check Virtual Disks Images
+        run: ls -l vos-*.img
 
-          # Associate virtual disks with loop devices
+      - name: Setup Loop Devices
+        run: |
           LOOP_VAR=$(losetup -Pf --show vos-var.img)
           LOOP_A=$(losetup -Pf --show vos-a.img)
           LOOP_B=$(losetup -Pf --show vos-b.img)
           LOOP_BOOT=$(losetup -Pf --show vos-boot.img)
           LOOP_EFI=$(losetup -Pf --show vos-efi.img)
 
-          # Check loop devices
-          losetup -a
+      - name: Check Loop Devices
+        run: losetup -a
 
-          # Format virtual disks
+      - name: Format Virtual Disks
+        run: |
           mkfs.ext4 $LOOP_VAR -L vos-var
           mkfs.ext4 $LOOP_A -L vos-a
           mkfs.ext4 $LOOP_B -L vos-b
