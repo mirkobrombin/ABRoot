@@ -73,27 +73,28 @@ jobs:
           dd if=/dev/zero of=vos-b.img bs=1M count=1024
           dd if=/dev/zero of=vos-boot.img bs=1M count=100
           dd if=/dev/zero of=vos-efi.img bs=1M count=100
-
-          echo "\nCheck Virtual Disks Images"
-          ls -l vos-*.img
+          
+      - name: Format Virtual Disks Images
+        run: |
+          mkfs.ext4 vos-var.img -L vos-var
+          mkfs.ext4 vos-a.img -L vos-a
+          mkfs.ext4 vos-b.img -L vos-b
+          mkfs.ext4 vos-boot.img -L vos-boot
+          mkfs.vfat vos-efi.img -n vos-efi
+          
+      - name: Check Virtual Disks Images
+        run: ls -l vos-*.img
 
       - name: Setup Loop Devices
         run: |
-          LOOP_VAR=$(losetup -Pf --show vos-var.img)
-          LOOP_A=$(losetup -Pf --show vos-a.img)
-          LOOP_B=$(losetup -Pf --show vos-b.img)
-          LOOP_BOOT=$(losetup -Pf --show vos-boot.img)
-          LOOP_EFI=$(losetup -Pf --show vos-efi.img)
-
-          echo "\nCheck Loop Devices"
-          losetup -a
-
-          echo "\nFormat Loop Devices"
-          mkfs.ext4 $LOOP_VAR -L vos-var
-          mkfs.ext4 $LOOP_A -L vos-a
-          mkfs.ext4 $LOOP_B -L vos-b
-          mkfs.ext4 $LOOP_BOOT -L vos-boot
-          mkfs.vfat $LOOP_EFI -n vos-efi
+          losetup -Pf --show vos-var.img
+          losetup -Pf --show vos-a.img
+          losetup -Pf --show vos-b.img
+          losetup -Pf --show vos-boot.img
+          losetup -Pf --show vos-efi.img
+          
+      - name: Check Loop Devices
+        run: losetup -a
 
       - name: List devices
         run: lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
