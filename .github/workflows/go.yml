@@ -96,6 +96,10 @@ jobs:
       - name: Check Loop Devices
         run: losetup -a
 
+      - name: Inform Kernel
+        run: |
+          partprobe
+
       - name: List devices
         run: lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
 
