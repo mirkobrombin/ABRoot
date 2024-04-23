@@ -99,7 +99,7 @@ jobs:
         run: |
           for loopdev in $(losetup -l | awk '{print $1}' | grep '/dev/loop'); do
             echo "Label for $loopdev:"
-            e2label $loopdev
+            e2label $loopdev || true
           done
 
           partprobe
