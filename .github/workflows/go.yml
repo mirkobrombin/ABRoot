@@ -68,50 +68,39 @@ jobs:
         run: |
           tar -xzvf artifacts/abrootv2.tar.gz -C .
 
-      - name: Create Virtual Disks Images
+      - name: Create Virtual Disk Image
         run: |
-          dd if=/dev/zero of=vos-var.img bs=1M count=1024
-          dd if=/dev/zero of=vos-a.img bs=1M count=1024
-          dd if=/dev/zero of=vos-b.img bs=1M count=1024
-          dd if=/dev/zero of=vos-boot.img bs=1M count=100
-          dd if=/dev/zero of=vos-efi.img bs=1M count=100
+          dd if=/dev/zero of=vos.img bs=1M count=3328
 
-      - name: Setup Loop Devices
+      - name: Setup Loop Device
         id: setup_loop
         run: |
-          var_loop=$(losetup -Pf --show vos-var.img)
-          echo "var_loop=$var_loop" >> $GITHUB_ENV
-          a_loop=$(losetup -Pf --show vos-a.img)
-          echo "a_loop=$a_loop" >> $GITHUB_ENV
-          b_loop=$(losetup -Pf --show vos-b.img)
-          echo "b_loop=$b_loop" >> $GITHUB_ENV
-          boot_loop=$(losetup -Pf --show vos-boot.img)
-          echo "boot_loop=$boot_loop" >> $GITHUB_ENV
-          efi_loop=$(losetup -Pf --show vos-efi.img)
-          echo "efi_loop=$efi_loop" >> $GITHUB_ENV
+          loop_device=$(losetup -Pf --show vos.img)
+          echo "loop_device=$loop_device" >> $GITHUB_ENV
 
       - name: Create Partitions
         run: |
-          parted ${var_loop} mklabel gpt mkpart vos-var ext4 1MiB 100%
-          parted ${a_loop} mklabel gpt mkpart vos-a ext4 1MiB 100%
-          parted ${b_loop} mklabel gpt mkpart vos-b ext4 1MiB 100%
-          parted ${boot_loop} mklabel gpt mkpart vos-boot ext4 1MiB 100%
-          parted ${efi_loop} mklabel gpt mkpart vos-efi fat32 1MiB 100%
+          parted ${loop_device} mklabel gpt
+          parted ${loop_device} mkpart vos-var ext4 1MiB 1025MiB
+          parted ${loop_device} mkpart vos-a ext4 1025MiB 2049MiB
+          parted ${loop_device} mkpart vos-b ext4 2049MiB 3073MiB
+          parted ${loop_device} mkpart vos-boot ext4 3073MiB 3173MiB
+          parted ${loop_device} mkpart vos-efi fat32 3173MiB 3273MiB
 
       - name: Format Partitions
         run: |
-          mkfs.ext4 ${var_loop}p1 -L vos-var
-          mkfs.ext4 ${a_loop}p1 -L vos-a
-          mkfs.ext4 ${b_loop}p1 -L vos-b
-          mkfs.ext4 ${boot_loop}p1 -L vos-boot
-          mkfs.vfat ${efi_loop}p1 -n vos-efi
+          mkfs.ext4 ${loop_device}p1 -L vos-var
+          mkfs.ext4 ${loop_device}p2 -L vos-a
+          mkfs.ext4 ${loop_device}p3 -L vos-b
+          mkfs.ext4 ${loop_device}p4 -L vos-boot
+          mkfs.vfat ${loop_device}p5 -n vos-efi
 
       - name: Synchronize Partitions
         run: |
-          partprobe
+          partprobe ${loop_device}
           sleep 2
 
-      - name: Check Loop Devices
+      - name: Check Loop Device
         run: |
           losetup -a
           ls -l /dev/disk/by-label
