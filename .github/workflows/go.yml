@@ -62,7 +62,7 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get update
-          apt-get install -y parted mount kpartx kmod dosfstools
+          apt-get install -y parted mount kpartx kmod dosfstools libbtrfs libdevmapper libgpgme pkg-config libdpkg
 
       - name: Extract Build
         run: |
