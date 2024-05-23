@@ -76,24 +76,35 @@ jobs:
           dd if=/dev/zero of=vos-boot.img bs=1M count=100
           dd if=/dev/zero of=vos-efi.img bs=1M count=100
 
-      - name: Format Virtual Disks Images
-        run: |
-          mkfs.ext4 vos-var.img -L vos-var
-          mkfs.ext4 vos-a.img -L vos-a
-          mkfs.ext4 vos-b.img -L vos-b
-          mkfs.ext4 vos-boot.img -L vos-boot
-          mkfs.vfat vos-efi.img -n vos-efi
-
-      - name: Check Virtual Disks Images
-        run: ls -lh *.img
-
       - name: Setup Loop Devices
+        id: setup_loop
         run: |
-          losetup -Pf --show vos-var.img
-          losetup -Pf --show vos-a.img
-          losetup -Pf --show vos-b.img
-          losetup -Pf --show vos-boot.img
-          losetup -Pf --show vos-efi.img
+          var_loop=$(losetup -Pf --show vos-var.img)
+          echo "::set-output name=var_loop::$var_loop"
+          a_loop=$(losetup -Pf --show vos-a.img)
+          echo "::set-output name=a_loop::$a_loop"
+          b_loop=$(losetup -Pf --show vos-b.img)
+          echo "::set-output name=b_loop::$b_loop"
+          boot_loop=$(losetup -Pf --show vos-boot.img)
+          echo "::set-output name=boot_loop::$boot_loop"
+          efi_loop=$(losetup -Pf --show vos-efi.img)
+          echo "::set-output name=efi_loop::$efi_loop"
+
+      - name: Create Partitions
+        run: |
+          parted ${{ steps.setup_loop.outputs.var_loop }} mklabel gpt mkpart vos-var ext4 1MiB 100%
+          parted ${{ steps.setup_loop.outputs.a_loop }} mklabel gpt mkpart vos-a ext4 1MiB 100%
+          parted ${{ steps.setup_loop.outputs.b_loop }} mklabel gpt mkpart vos-b ext4 1MiB 100%
+          parted ${{ steps.setup_loop.outputs.boot_loop }} mklabel gpt mkpart vos-boot ext4 1MiB 100%
+          parted ${{ steps.setup_loop.outputs.efi_loop }} mklabel gpt mkpart vos-efi fat32 1MiB 100%
+
+      - name: Format Partitions
+        run: |
+          mkfs.ext4 ${${{ steps.setup_loop.outputs.var_loop }}p1} -L vos-var
+          mkfs.ext4 ${${{ steps.setup_loop.outputs.a_loop }}p1} -L vos-a
+          mkfs.ext4 ${${{ steps.setup_loop.outputs.b_loop }}p1} -L vos-b
+          mkfs.ext4 ${${{ steps.setup_loop.outputs.boot_loop }}p1} -L vos-boot
+          mkfs.vfat ${${{ steps.setup_loop.outputs.efi_loop }}p1} -n vos-efi
 
       - name: Synchronize Partitions
         run: |
@@ -116,7 +127,6 @@ jobs:
       - name: Run Integration Test
         run: |
           ./abrootv2 status
-
 
   release:
     name: Release
