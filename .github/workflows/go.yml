@@ -95,9 +95,13 @@ jobs:
           losetup -Pf --show vos-boot.img
           losetup -Pf --show vos-efi.img
 
-      - name: Check Loop Devices
+      - name: Synchronize Partitions
         run: |
           partprobe
+          sleep 2
+
+      - name: Check Loop Devices
+        run: |
           losetup -a
           ls -l /dev/disk/by-label
 
@@ -112,6 +116,7 @@ jobs:
       - name: Run Integration Test
         run: |
           ./abrootv2 status
+
 
   release:
     name: Release
