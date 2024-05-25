@@ -104,7 +104,7 @@ jobs:
         run: |
           losetup -a
           ls -l /dev/disk/by-label
-          blkid ${loop_device}
+          blkid
 
       - name: Test Mount
         run: |
