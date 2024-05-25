@@ -98,12 +98,13 @@ jobs:
       - name: Synchronize Partitions
         run: |
           partprobe ${loop_device}
-          sleep 2
+          sleep 5
 
       - name: Check Loop Device
         run: |
           losetup -a
           ls -l /dev/disk/by-label
+          blkid ${loop_device}
 
       - name: Test Mount
         run: |
