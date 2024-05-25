@@ -64,7 +64,7 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get update
-          apt-get install -y parted mount kpartx kmod dosfstools libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config libdpkg-dev udev
+          apt-get install -y parted mount kpartx kmod dosfstools libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config libdpkg-dev udev curl
 
       - name: Extract Build
         run: |
@@ -117,7 +117,7 @@ jobs:
 
       - name: Configure distrobox
         run: |
-          curl -s https://raw.githubusercontent.com/89luca89/distrobox/1.7.1/install | sudo sh
+          curl -s https://raw.githubusercontent.com/89luca89/distrobox/1.7.1/install | sh
           distrobox create -i ghcr.io/vanilla-os/pico:main -n pico
 
       - name: List devices
