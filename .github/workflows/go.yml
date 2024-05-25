@@ -122,7 +122,7 @@ jobs:
 
       - name: List devices
         run: |
-          distrobox enter -n pico lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
+          distrobox enter -n pico -- lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
           exit
           
       - name: Run Integration Test
