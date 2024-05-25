@@ -115,9 +115,16 @@ jobs:
           mount LABEL=vos-var /mnt
           umount /mnt
 
-      - name: List devices
-        run: lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
+      - name: Configure distrobox
+        run: |
+          curl -s https://raw.githubusercontent.com/89luca89/distrobox/1.7.1/install | sudo sh
+          distrobox create -i ghcr.io/vanilla-os/pico:main -n pico
 
+      - name: List devices
+        run: |
+          distrobox enter -e pico lsblk -J -o "NAME,FSTYPE,LABEL,MOUNTPOINT,UUID"
+          exit
+          
       - name: Run Integration Test
         run: |
           ./abrootv2 status
