@@ -99,6 +99,8 @@ jobs:
         run: |
           partprobe ${loop_device}
           sleep 5
+          udevadm trigger
+          udevadm settle
 
       - name: Check Loop Device
         run: |
