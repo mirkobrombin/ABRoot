@@ -48,6 +48,7 @@ jobs:
     container:
       image: ghcr.io/vanilla-os/pico:main
       volumes:
+        - /dev:/dev:rslave
         - /proc:/proc
         - /:/run/host
       options: --privileged -it
