@@ -47,9 +47,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/vanilla-os/pico:main
-      options: --privileged -it --cap-add ALL
       volumes:
-        - /dev:/dev:rslave
+        - /proc:/proc
+        - /:/run/host
+      options: --privileged -it
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +63,7 @@ jobs:
       - name: Install Dependencies
         run: |
           apt-get update
-          apt-get install -y parted mount kpartx kmod dosfstools libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config libdpkg-dev
+          apt-get install -y parted mount kpartx kmod dosfstools libbtrfs-dev libdevmapper-dev libgpgme-dev pkg-config libdpkg-dev udev
 
       - name: Extract Build
         run: |
