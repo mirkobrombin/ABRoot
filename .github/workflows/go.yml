@@ -118,7 +118,7 @@ jobs:
       - name: Configure distrobox
         run: |
           curl -s https://raw.githubusercontent.com/89luca89/distrobox/1.7.1/install | sh
-          distrobox create -i ghcr.io/vanilla-os/pico:main -n pico
+          distrobox create -i ghcr.io/vanilla-os/pico:main -n pico -y
 
       - name: List devices
         run: |
